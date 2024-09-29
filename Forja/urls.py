@@ -14,9 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from ForjaApp import views
+from django.conf.urls.static import static
+
 from django.conf.urls import handler404
 
 
@@ -28,6 +31,14 @@ urlpatterns = [path('', views.index, name='index'),
     path('profile/', views.profile, name='profile'),
     path('recommend-similar/', views.recommend_similar_movies, name='recommend_similar_movies'),
     path('generate-image/', views.generate_image, name='generate_image'),
+    path('movies/create/', views.movie_create, name='create_movie'),
+    path('movies/', views.movie_list, name='list_movies'),
+    path('movies/update/<int:movie_id>/', views.update_movie, name='update_movie'),
+    path('movies/delete/<int:movie_id>/', views.delete_movie, name='delete_movie'),
+    path('', views.index, name='home'),  # URL for your home page
 
-]
+
+               ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 handler404 = 'ForjaApp.views.custom_404_view'  

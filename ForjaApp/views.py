@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, MovieForm
 from django.contrib.auth.decorators import login_required
 from .utils import get_similar_movies
 from .models import Recommendation
@@ -113,3 +113,48 @@ def generate_image(request):
             error_message = "Veuillez entrer une description liée aux films."
 
     return render(request, 'image_generator.html', {'image_url': image_url, 'error_message': error_message})
+
+# List all movies
+def movie_list(request):
+    movies = Movie.objects.all()
+    return render(request, 'movie_list.html', {'movies': movies})
+
+# Add a new movie
+@login_required
+def movie_create(request):
+    if request.method == 'POST':
+        form = MovieForm(request.POST, request.FILES)  # Don't forget to include `request.FILES` for image upload
+        if form.is_valid():
+            form.save()
+            return redirect('movie_list')  # Redirect to a movie list page after adding the movie (adjust URL)
+    else:
+        form = MovieForm()
+
+    return render(request, 'add_movie.html', {'form': form})
+# Update Movie
+@login_required
+def update_movie(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    if request.method == 'POST':
+        form = MovieForm(request.POST, instance=movie)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Movie updated successfully!')
+            return redirect('list_movies')
+    else:
+        form = MovieForm(instance=movie)
+    return render(request, 'update_movie.html', {'form': form, 'movie': movie})
+
+# Delete Movie
+@login_required
+def delete_movie(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    if request.method == 'POST':
+        movie.delete()
+        messages.success(request, 'Movie deleted successfully!')
+        return redirect('list_movies')
+    return render(request, 'delete_movie.html', {'movie': movie})
+
+def index(request):
+    movies = Movie.objects.all()  # Retrieve all movie records
+    return render(request, 'index.html', {'movies': movies})  # Pass movies to the template
