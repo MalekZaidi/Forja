@@ -36,6 +36,7 @@ urlpatterns = [path('', views.index, name='index'),
     path('movies/update/<int:movie_id>/', views.update_movie, name='update_movie'),
     path('movies/delete/<int:movie_id>/', views.delete_movie, name='delete_movie'),
     path('', views.index, name='home'),  # URL for your home page
+    path('add_movie/', views.movie_create, name='add_movie'),  # Correct URL for adding a movie
 
 
                ]

@@ -123,28 +123,34 @@ def movie_list(request):
 @login_required
 def movie_create(request):
     if request.method == 'POST':
-        form = MovieForm(request.POST, request.FILES)  # Don't forget to include `request.FILES` for image upload
+        form = MovieForm(request.POST, request.FILES)  # Include request.FILES for image upload
         if form.is_valid():
-            form.save()
-            return redirect('movie_list')  # Redirect to a movie list page after adding the movie (adjust URL)
+            form.save()  # Save the movie instance
+            print("Movie saved successfully!")  # Debug line
+            return redirect('index')  # Redirect to the index page after saving
+        else:
+            print("Form errors:", form.errors)  # Debug line to see form errors
     else:
         form = MovieForm()
 
-    return render(request, 'add_movie.html', {'form': form})
-# Update Movie
+    return render(request, 'add_movie.html', {'form': form})  # Render the form
+
+
+
+
 @login_required
 def update_movie(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
     if request.method == 'POST':
-        form = MovieForm(request.POST, instance=movie)
+        form = MovieForm(request.POST, request.FILES, instance=movie)  # Include request.FILES for file uploads
         if form.is_valid():
             form.save()
             messages.success(request, 'Movie updated successfully!')
-            return redirect('list_movies')
+            return redirect('index  ')  # Ensure 'list_movies' is a valid URL name
     else:
         form = MovieForm(instance=movie)
-    return render(request, 'update_movie.html', {'form': form, 'movie': movie})
 
+    return render(request, 'update_movie.html', {'form': form, 'movie': movie})
 # Delete Movie
 @login_required
 def delete_movie(request, movie_id):
@@ -152,9 +158,10 @@ def delete_movie(request, movie_id):
     if request.method == 'POST':
         movie.delete()
         messages.success(request, 'Movie deleted successfully!')
-        return redirect('list_movies')
+        return redirect('index')
     return render(request, 'delete_movie.html', {'movie': movie})
 
 def index(request):
+
     movies = Movie.objects.all()  # Retrieve all movie records
     return render(request, 'index.html', {'movies': movies})  # Pass movies to the template
