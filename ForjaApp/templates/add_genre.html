@@ -7,9 +7,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Full height */
-        position: relative; /* Relative position for the container */
-        z-index: 1; /* Ensure the wrapper is on top */
+        height: 100vh;
+        position: relative;
+        z-index: 1;
     }
 
     .login-container {
@@ -17,9 +17,9 @@
         padding: 30px;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        width: 400px; /* Adjust width as needed */
+        width: 400px;
         text-align: center;
-        z-index: 10; /* Bring the container to the front */
+        z-index: 10;
     }
 
     h2 {
@@ -65,28 +65,12 @@
 
 <div class="login-wrapper">
     <div class="login-container">
-        <h2>Ajouter un Film</h2>
-        <!-- Form to add a new movie -->
+        <h2>Ajouter un Genre</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
-            {{ form.title|add_class:"form-control" | attr:"placeholder:'Titre du Film'" }}
-            {{ form.release_date|add_class:"form-control" | attr:"placeholder:'Date de Sortie'" }}
-            {{ form.overview|add_class:"form-control" | attr:"placeholder:'Aperçu du Film'" }}
-            {{ form.poster_path|add_class:"form-control" | attr:"placeholder:'Chemin de l'Affiche'" }}
-
-            <label>Sélectionner des Genres</label>
-            {% for genre in form.genres %}
-            <div>
-                {{ genre.tag }} {{ genre.choice_label }}
-            </div>
-            {% endfor %}
-
-            <button type="submit" class="btn-login">Ajouter le Film</button>
+            {{ form.name|add_class:"form-control" }}
+            <button type="submit" class="btn-login">Ajouter le Genre</button>
         </form>
-
-        <a href="{% url 'add_genre' %}" class="btn-genre">Ajouter un Nouveau Genre</a>
-
     </div>
 </div>
 {% endblock %}

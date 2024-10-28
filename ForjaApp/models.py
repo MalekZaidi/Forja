@@ -3,11 +3,22 @@ from django.contrib.auth.models import User
 
 from django.db import models
 
+
+
+from django.db import models
+
+class Genre(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class Movie(models.Model):
     title = models.CharField(max_length=200)
     release_date = models.DateField()
     overview = models.TextField(blank=True, default='')  # Ajoute `blank=True` et `default=''`
     poster_path = models.ImageField(upload_to='posters/')  # Field for storing image paths
+    genres = models.ManyToManyField(Genre, related_name='movies')
 
 
     def __str__(self):
