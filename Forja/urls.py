@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from ForjaApp import views
 from django.conf.urls import handler404
-from ForjaApp.views import submit_feedback  # Import the view
+from ForjaApp.views import submit_feedback,cinema_list,rate_cinema  # Import the view
 
 
 urlpatterns = [path('', views.index, name='index'),
@@ -35,5 +35,7 @@ urlpatterns = [path('', views.index, name='index'),
     path('user-feedback/', views.user_feedback_management, name='user_feedback_management'),
     path('movies/', views.movie_list, name='movie_list'),
     path('rate/<int:movie_id>/', views.rate_movie, name='rate_movie'),
+     path('cinemas/', cinema_list, name='cinema_list'),
+    path('cinemas/rate/<int:cinema_id>/', rate_cinema, name='rate_cinema'),
 
 ]

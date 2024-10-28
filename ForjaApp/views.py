@@ -2,10 +2,10 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserRegisterForm,RatingForm
+from .forms import UserRegisterForm,RatingForm,CinemaRatingForm
 from django.contrib.auth.decorators import login_required
 from .utils import get_similar_movies
-from .models import Movie, Recommendation,UserFeedback,Rating,WatchLater
+from .models import Movie, Recommendation,UserFeedback,Rating,WatchLater,Cinema,CinemaRating
 import re,requests,random,openai
 from django.http import JsonResponse
 from groq import Groq
@@ -443,6 +443,7 @@ def submit_feedback(request):
 
 
 
+
 @login_required
 def rate_movie(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
@@ -465,6 +466,14 @@ def rate_movie(request, movie_id):
                 rating.user = request.user  
                 rating.save()
 
+            # Handle Watch Later checkbox
+            if 'watch_later' in request.POST:
+                # Add movie to Watch Later
+                WatchLater.objects.get_or_create(user=request.user, movie=movie)
+            else:
+                # Remove movie from Watch Later
+                WatchLater.objects.filter(user=request.user, movie=movie).delete()
+
             return redirect('rate_movie', movie_id=movie.id)  
     else:
         form = RatingForm() if not user_rating else None  
@@ -479,3 +488,45 @@ def rate_movie(request, movie_id):
 def movie_list(request):
     movies = Movie.objects.annotate(average_rating=Avg('rating__score'))
     return render(request, 'movie_list.html', {'movies': movies})
+
+
+def cinema_list(request):
+    cinemas = Cinema.objects.annotate(average_rating=Avg('cinemarating__score'))  # Annotate with average rating
+    return render(request, 'cinema_list.html', {'cinemas': cinemas})
+
+
+@login_required
+def rate_cinema(request, cinema_id):
+    cinema = get_object_or_404(Cinema, id=cinema_id)
+    
+    # Get all ratings for the cinema
+    ratings = CinemaRating.objects.filter(cinema=cinema).order_by('-date_rated')
+
+    # Get the user's rating if it exists
+    user_rating = CinemaRating.objects.filter(cinema=cinema, user=request.user).first()
+
+    if request.method == 'POST':
+        form = CinemaRatingForm(request.POST)
+        if form.is_valid():
+            if user_rating:
+                # Update existing rating
+                user_rating.score = form.cleaned_data['score']
+                user_rating.review = form.cleaned_data['review']
+                user_rating.save()
+            else:
+                # Create a new rating
+                cinema_rating = form.save(commit=False)
+                cinema_rating.cinema = cinema
+                cinema_rating.user = request.user  # Ensure that the user is logged in
+                cinema_rating.save()
+
+            return redirect('rate_cinema', cinema_id=cinema.id)  
+    else:
+        form = CinemaRatingForm() if not user_rating else None  # Use None if user_rating exists
+
+    return render(request, 'rate_cinema.html', {
+        'cinema': cinema,
+        'form': form,
+        'ratings': ratings,
+        'user_rating': user_rating,
+    })
