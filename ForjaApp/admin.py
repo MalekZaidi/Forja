@@ -1,5 +1,5 @@
 from django.contrib import admin 
-from .models import Movie, Rating, Recommendation, UserFeedback
+from .models import Movie, Rating, Recommendation, UserFeedback, Post, Comment
 
 class MovieAdmin(admin.ModelAdmin):
     list_display = ('title', 'release_date', 'poster_path')
@@ -31,8 +31,22 @@ class UserFeedbackAdmin(admin.ModelAdmin):
     ordering = ('created_at',)  # Trier par created_at
     list_per_page = 20  # Customize the number of items displayed per page
 
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at', 'updated_at')
+    search_fields = ('title', 'content', 'author__username')
+    list_filter = ('created_at',)
+    ordering = ('created_at',)
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('post', 'author', 'created_at')
+    search_fields = ('post__title', 'author__username', 'content')
+    list_filter = ('created_at',)
+    ordering = ('created_at',)
+
 # Register your models here.
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Recommendation, RecommendationAdmin)
 admin.site.register(UserFeedback, UserFeedbackAdmin)  # Register UserFeedback with the admin
+admin.site.register(Post, PostAdmin)
+admin.site.register(Comment, CommentAdmin) 

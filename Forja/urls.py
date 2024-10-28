@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from ForjaApp import views
 from django.conf.urls import handler404
-from ForjaApp.views import submit_feedback  # Import the view
+from ForjaApp.views import submit_feedback,post_list, post_detail, post_create, post_update, post_delete, update_comment  # Import the view
 
 
 urlpatterns = [path('', views.index, name='index'),
@@ -33,5 +33,11 @@ urlpatterns = [path('', views.index, name='index'),
     path('song-writer/', views.song_writer_view, name='song_writer'),
     path('submit-feedback/', views.submit_feedback, name='submit_feedback'),
     path('user-feedback/', views.user_feedback_management, name='user_feedback_management'),
+    path('posts/', post_list, name='post_list'),
+    path('posts/<int:post_id>/', post_detail, name='post_detail'),
+    path('posts/create/', post_create, name='post_create'),
+    path('posts/update/<int:post_id>/', post_update, name='post_update'),
+    path('posts/delete/<int:post_id>/', post_delete, name='post_delete'),
+    path('comment/update/<int:comment_id>/', update_comment, name='update_comment'),
 
 ]

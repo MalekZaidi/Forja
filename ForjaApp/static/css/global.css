@@ -5,6 +5,31 @@ Author: TemplatesOnWeb
 Author URI: https://www.templateonweb.com/
 Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
 */
+/* Add this to your global CSS file */
+
+/* Section background */
+#post-list {
+  background-color: #000; /* Black background for the section */
+  color: #fff; /* White text for readability */
+}
+
+/* Card styles */
+.card {
+  background-color: #111; /* Darker background for the card */
+  border: 1px solid #444; /* Optional: border for definition */
+  color: #fff; /* White text color for card */
+}
+
+/* Button styles */
+.card .btn {
+  background-color: #007bff; /* Button color */
+  color: #fff; /* Button text color */
+}
+
+.card .btn:hover {
+  background-color: #0056b3; /* Darker on hover */
+}
+
 body{
 font-family: 'Rajdhani', sans-serif;
 color: #ffffff;

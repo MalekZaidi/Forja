@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+<section id="post-detail">
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+        <p>Posted by {{ post.author }} on {{ post.created_at }}</p>
+
+        {% if user == post.author %}
+            <a href="{% url 'post_update' post.id %}" class="btn btn-warning">Edit Post</a>
+            <a href="{% url 'post_delete' post.id %}" class="btn btn-danger">Delete Post</a>
+        {% endif %}
+
+        <hr>
+
+        <h2>Comments</h2>
+        {% for comment in comments %}
+            <div>
+                <p><strong>{{ comment.author }}</strong> ({{ comment.created_at|date:"F j, Y, g:i a" }})</p>
+                <p>{{ comment.content }}</p>
+                {% if comment.author == request.user %}
+                    <a href="{% url 'update_comment' comment.id %}">Edit</a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        <hr>
+
+        <h3>Leave a Comment:</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

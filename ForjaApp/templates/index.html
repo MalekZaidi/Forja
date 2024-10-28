@@ -70,7 +70,11 @@
 			{% if user.is_authenticated %}
 			<li class="nav-item">
 				<a class="nav-link" href="{% url 'recommend_similar_movies' %}">Recommandation de Films</a>
-			  </li><li class="nav-item">
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="{% url 'post_list' %}">Forum</a>
+			</li>
+			  <li class="nav-item">
 			  <a class="nav-link" href="{% url 'profile' %}">Profile</a>
 			</li>
 			<li class="nav-item">

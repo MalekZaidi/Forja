@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+<section id="post-list" class="bg-dark text-white py-5">
+    <div class="container">
+        <h2 class="my-4">Forum Posts</h2>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'post_create' %}" class="btn btn-primary mb-3">Add New Post</a>
+        {% endif %}
+
+        <div class="row">
+            <h1>All Posts</h1>
+            {% for post in posts %}
+                <div>
+                    <h2>{{ post.title }}</h2>
+                    <p>{{ post.content|truncatewords:30 }}</p>
+                    <p>Posted by {{ post.author }} on {{ post.created_at }}</p>
+                    <a href="{% url 'post_detail' post.id %}">Read more & Comment</a>
+                </div>
+            {% empty %}
+                <p>No posts available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
